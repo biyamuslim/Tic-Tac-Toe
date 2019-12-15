@@ -10,60 +10,75 @@ char board[3][3] = { {'1','2','3'},{'4','5','6'},{'7','8','9'} };
 //Variable Declaration
 int option;
 int row, column;
-char turn = 'x';
+char turn;
 bool draw = false;
+// function declaration 
 void show_Board();
 void Start();
 void player_turn();
 bool game_over();
 
+char symbol_for_player();
+void toggle_player();
+// ****************************
+//			Main Function
+// ****************************
 int main() {
 	string p1, p2;
 	char ch1, ch2;
 	Player player1, player2;
-
 	Start();
-
 	cout << "Enter Player 1 name : ";
 	getline(cin, p1);
 	player1.set_name(p1);
-	//ch1 = character();
+	turn = symbol_for_player();
 	cout << "Enter Player 2 name : ";
 	cin.ignore();
 	getline(cin, p2);
 	player2.set_name(p2);
+										// loop continuous until the game is over or draw
+
 	while (game_over()) {
 		show_Board();
 		player_turn();
+		/*if (draw==true) {
+			cout << endl << "GAME DRAW.....! " << endl;
+			break;
+		}*/
 		game_over();
 	}
-	//	system("CLS");
+	system("CLS");
+	cout << "\n\n\n\n\n\n\n";
+	show_Board();
+	toggle_player();
+	if (turn == 'x' && draw == false)
+		cout << endl << "Congratulation player "<< turn << " has won the game....!" << endl;
+	else if (turn == 'o' && draw == false)
+		cout << endl << "Congratulation player  " << turn << " has won the game....!" << endl;
+	else
+		cout << endl << "GAME DRAW.........! " << endl;
+
 	_getch();
 	return 0;
 }
-
+// ****************************
+//		Start Function
+// ****************************
 void Start() {
 	cout << "    _____ _______  _____     _______  ____   _____     _______  ____   _____\n"
 		<< "      |      |    |             |    |    | |             |    |    | |\n"
-		<< "      |      |    |             |    |____| |             |    |    | |----\n"
+		<< "      |      |    |             |    |----| |             |    |    | |----\n"
 		<< "      |   ___|___ |_____        |    |    | |_____        |    |____| |_____\n\n"
 		<< "===============================================================================\n";
 	show_Board();
-	//	cout << "Enter";
-
 }
-// Zaaeema ka show board
-/*void create_Board() {
-	for (int i = 0; i < 19; i++) {
-		for (int j = 0; j < 31; j++) {
-			if (i == 0 || i == 6 || i == 12 || i == 18)
-				arr[i][j] = '=';
-			if (j == 0 || j == 10 || j == 20 || j == 30)
-				arr[i][j] = '|';
-		}
-	}
-}*/
+// ****************************
+//		Show Board
+// ****************************
 void show_Board() {
+	cout << "\n\n\n";
+	//cout << "\t\t\t TURN:   PLAYER[" << turn << "]" << endl;
+	//cout << "\t\t\t CHOICE of box: " << option << endl << endl;
 	cout << "\t     |     |     \n";
 	cout << "\t  " << board[0][0] << "  | " << board[0][1] << "   |  " << board[0][2] << " \n";
 	cout << "\t_____|_____|_____\n";
@@ -72,32 +87,47 @@ void show_Board() {
 	cout << "\t_____|_____|_____\n";
 	cout << "\t     |     |     \n";
 	cout << "\t  " << board[2][0] << "  | " << board[2][1] << "   |  " << board[2][2] << " \n";
+	cout << "\n\n\n";
 }
-void Play(Player p1, Player p2) {
-
-}
-/*char character() {
-	char num;
-	cout << "          -------------------\n"
-		<< "	          CHARACTERS\n"
-		<< "          -------------------\n"
-		<< "              o        x  \n"
-		<< "          PICK A CHARCTER : ";
-	cin >> num;
-	if (num != 'o' && num != 'x') {
-		cout << "INVALID CHARACTER \n Please Enter o or x !" << endl;
-		character();
+// ****************************
+// Function for choice of symbol
+// ****************************
+char symbol_for_player() {
+	char s;
+	cout << "Enter the symbol(it can be 'x' or 'o'): ";
+	cin >> s;
+	while (s != 'x' && s !='o') {
+		cout << "Enter the symbol(it can be 'x' or 'o'): ";
+		cin >> s;
 	}
-	return num;
-}*/
+	/*if (s != 'x' && s != 'o') {
+		cout << "INVALID symbol.....!" << endl;
+		cout << "Please enter 'o' or 'x': ";
+		symbol_for_player();
+	}*/
+	return s;
+}
+// ****************************
+//    Toggle player function
+// ****************************
+void toggle_player() {
+	if (turn == 'x')
+		turn = 'o';
+	else
+		turn = 'x';
+}
+// ****************************
+//  Player Turn Function
+// ****************************
 void player_turn() {
 	if (turn == 'x')
-		cout << "PLAYER[x] turn: " << endl;
+		cout << "PLAYER[x]'s turn: " << endl;
 	else if (turn == 'o')
-		cout << "PLAYER[o] turn: " << endl;
+		cout << "PLAYER[o]'s turn: " << endl;
 	// taking input from user
 	cout << "Enter your Choice: ";
 	cin >> option;
+	//To check which column needs to be updated
 	switch (option) {
 	case 1: row = 0; column = 0; break;
 	case 2: row = 0; column = 1; break;
@@ -113,36 +143,37 @@ void player_turn() {
 	}
 	if (turn == 'x' && board[row][column] != 'x' && board[row][column] != 'o') {
 		board[row][column] = 'x';
-		turn = 'o';   // make a toggle function
+		toggle_player();  // toggle player
 	}
 	else if (turn == 'o' && board[row][column] != 'x' && board[row][column] != 'o') {
 		board[row][column] = 'o';
-		turn = 'x';
+		toggle_player();   //toggle player
 	}
 	else {
 		cout << endl << "TAKEN....! " << endl << "Please choose another option:";
 		player_turn();
 	}
-	//show_Board();
 }
+// ****************************
+//   Game Over Function
+// ****************************
 bool game_over() {
-	//checking the win for Simple Rows and Simple Column
+	// checking the win for row or column
 	for (int i = 0; i < 3; i++)
 		if (board[i][0] == board[i][1] && board[i][0] == board[i][2] || board[0][i] == board[1][i] && board[0][i] == board[2][i])
 			return false;
 
-	//checking the win for both diagonal
-
+	// checking the win for diagonal
 	if (board[0][0] == board[1][1] && board[0][0] == board[2][2] || board[0][2] == board[1][1] && board[0][2] == board[2][0])
 		return false;
 
-	//Checking the game is in continue mode or not
+	// checkin if the game is still continuous
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
-			if (board[i][j] != 'X' && board[i][j] != 'O')
+			if (board[i][j] != 'x' && board[i][j] != 'o')
 				return true;
 
-	//Checking the if game already draw
+	// checks if the game is already drawn
 	draw = true;
 	return false;
 }
